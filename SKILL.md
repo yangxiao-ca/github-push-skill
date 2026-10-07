@@ -1,7 +1,7 @@
 ---
 name: github-push-skill
 description: Push code to GitHub repositories using SSH. Handles git operations including commit, push, and repository management. Use when the user asks to push code, commit changes, or sync with GitHub.
-  触发词：推送到GitHub、推代码、push到GitHub、提交到GitHub、同步GitHub、上传代码、推到GitHub、git push、提交代码、推送代码
+  触发词：推送到GitHub、推代码、push到GitHub、提交到GitHub、同步GitHub、上传代码、推到GitHub、git push、提交代码、推送代码、创建GitHub仓库、新建仓库、建个仓库
 ---
 
 # GitHub Push Skill
@@ -18,7 +18,49 @@ description: Push code to GitHub repositories using SSH. Handles git operations 
 
 ## 工作流程
 
-### 1. 单仓库推送
+### 1. 创建新仓库并推送（完整流程）
+
+当用户要求创建新项目并推送到 GitHub 时：
+
+```bash
+# 步骤 1：读取 GitHub Token
+GITHUB_TOKEN=$(cat ~/.config/github/token)
+
+# 步骤 2：在本地创建项目目录并初始化 git
+mkdir /path/to/new-project
+cd /path/to/new-project
+git init
+# ... 创建项目文件 ...
+git add -A
+git commit -m "Initial commit"
+
+# 步骤 3：通过 GitHub API 创建远端仓库
+curl -s -H "Authorization: token $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github.v3+json" \
+  https://api.github.com/user/repos \
+  -d '{
+    "name": "repo-name",
+    "description": "仓库描述",
+    "private": false,
+    "auto_init": false
+  }'
+
+# 步骤 4：添加远程仓库并推送
+git remote add origin git@github.com:yangxiao-ca/repo-name.git
+git push -u origin main
+```
+
+**API 参数说明**：
+- `name`: 仓库名称（必填）
+- `description`: 仓库描述（可选）
+- `private`: 是否私有仓库，`false` 为公开，`true` 为私有（默认 false）
+- `auto_init`: 是否自动初始化（默认 false，因为我们已经有本地提交）
+
+**返回值**：
+- 成功：返回仓库信息 JSON，包含 `html_url`、`ssh_url`、`clone_url` 等
+- 失败：返回错误信息，如仓库已存在、名称无效等
+
+### 2. 单仓库推送
 
 ```bash
 # 进入仓库目录

@@ -20,6 +20,12 @@
 - **默认分支**: `main`
 - **说明**: Obsidian SVG 图表生成 skill
 
+### steelman-thinking
+- **本地路径**: `/Users/sam/.workbuddy/skills/steelman-thinking`
+- **远程地址**: `git@github.com:yangxiao-ca/steelman-thinking.git`
+- **默认分支**: `main`
+- **说明**: 双向钢人论证框架 skill（决策前分析、争议拆解）
+
 ---
 
 ## 添加新仓库
